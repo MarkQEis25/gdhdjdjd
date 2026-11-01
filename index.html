@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>👀BogdanCoin</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: white;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .game {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid #ffffff20;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px #0005;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #ffd700;
+            font-size: 32px;
+        }
+
+        .coins {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 20px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .coin {
+            width: 180px;
+            height: 180px;
+            padding: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #ffb700;
+            background: #222;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #b96b00;
+            transition: transform 0.08s, box-shadow 0.08s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .coin img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .coin:active {
+            transform: scale(0.93);
+            box-shadow: 0 3px 0 #b96b00;
+        }
+
+        .stats {
+            margin: 25px 0;
+            line-height: 1.9;
+            color: #ddd;
+            font-size: 16px;
+        }
+
+        .shop {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #ffffff30;
+        }
+
+        .shop h2 {
+            color: #ffd700;
+        }
+
+        .upgrade {
+            width: 100%;
+            padding: 14px 10px;
+            margin: 7px 0;
+            border: none;
+            border-radius: 12px;
+            background: #00c896;
+            color: #062e25;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upgrade:hover:not(:disabled) {
+            background: #00e6ad;
+        }
+
+        .upgrade:disabled {
+            background: #65716e;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .message {
+            min-height: 24px;
+            margin-top: 12px;
+            color: #ffe259;
+        }
+
+        .reset {
+            margin-top: 20px;
+            padding: 9px 15px;
+            background: transparent;
+            color: #ff9999;
+            border: 1px solid #ff9999;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .reset:hover {
+            background: #ff999920;
+        }
+
+        .hint {
+            margin-top: 18px;
+            color: #aaa;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>👀BogdanCoin</h1>
+    <button id="musicButton" class="upgrade">
+    🔊 Выключить музыку
+</button>
+
+<audio id="backgroundMusic" loop preload="auto">
+    <source src="2_5420576601060455365.ogg" type="audio/ogg">
+</audio>
+
+    <div class="coins">
+        🪙 <span id="coins">0</span>
+    </div>
+
+    <!-- Кнопка с твоей картинкой -->
+    <button class="coin" id="coinButton" aria-label="Получить монеты">
+        <img src="coin.png" alt="DolbaebCoin">
+    </button>
+
+    <div class="stats">
+        💰 За клик: <span id="perClick">1</span><br>
+        🤖 Автодоход: <span id="perSecond">0</span> монет/сек
+    </div>
+
+    <div class="shop">
+
+        <h2>🛒 Магазин</h2>
+
+        <button class="upgrade" id="clickUpgrade">
+            💪 Сильный клик — 50 монет
+        </button>
+
+        <button class="upgrade" id="autoUpgrade">
+            🤖 Автокликер — 100 монет
+        </button>
+
+        <div class="message" id="message"></div>
+
+    </div>
+
+    <button class="reset" id="resetButton">
+        🔄 Начать заново
+    </button>
+
+    <div class="hint">
+        NikitaCoin © 2026
+    </div>
+
+</div>
+
+<script>
+    const defaultState = {
+        coins: 0,
+        perClick: 1,
+        perSecond: 0,
+        clickCost: 50,
+        autoCost: 100
+    };
+
+    function loadGame() {
+        try {
+            const saved = localStorage.getItem("NikitaCoinSave");
+
+            if (!saved) {
+                return { ...defaultState };
+            }
+
+            const data = JSON.parse(saved);
+
+            // Проверяем сохранённые данные
+            const result = { ...defaultState };
+
+            for (const key of Object.keys(defaultState)) {
+                if (
+                    typeof data[key] === "number" &&
+                    Number.isFinite(data[key]) &&
+                    data[key] >= 0
+                ) {
+                    result[key] = data[key];
+                }
+            }
+
+            result.coins = Math.floor(result.coins);
+            result.perClick = Math.floor(result.perClick);
+            result.perSecond = Math.floor(result.perSecond);
+            result.clickCost = Math.floor(result.clickCost);
+            result.autoCost = Math.floor(result.autoCost);
+
+            result.perClick = Math.max(1, result.perClick);
+            result.clickCost = Math.max(1, result.clickCost);
+            result.autoCost = Math.max(1, result.autoCost);
+
+            return result;
+        } catch {
+            return { ...defaultState };
+        }
+    }
+
+    let state = loadGame();
+
+    const coinsEl = document.getElementById("coins");
+    const perClickEl = document.getElementById("perClick");
+    const perSecondEl = document.getElementById("perSecond");
+
+    const clickUpgrade = document.getElementById("clickUpgrade");
+    const autoUpgrade = document.getElementById("autoUpgrade");
+    const messageEl = document.getElementById("message");
+
+    function saveGame() {
+        try {
+            localStorage.setItem(
+                "NikitaCoinSave",
+                JSON.stringify(state)
+            );
+        } catch (error) {
+            console.warn("Не удалось сохранить игру", error);
+        }
+    }
+
+    function update() {
+        coinsEl.textContent = Math.floor(state.coins).toLocaleString("ru-RU");
+        perClickEl.textContent = state.perClick.toLocaleString("ru-RU");
+        perSecondEl.textContent = state.perSecond.toLocaleString("ru-RU");
+
+        clickUpgrade.textContent =
+            `💪 Сильный клик — ${state.clickCost.toLocaleString("ru-RU")} монет`;
+
+        autoUpgrade.textContent =
+            `🤖 Автокликер — ${state.autoCost.toLocaleString("ru-RU")} монет`;
+
+        clickUpgrade.disabled = state.coins < state.clickCost;
+        autoUpgrade.disabled = state.coins < state.autoCost;
+
+        saveGame();
+    }
+
+    // Заработок за нажатие на картинку
+    document.getElementById("coinButton").addEventListener("click", () => {
+        state.coins += state.perClick;
+
+        messageEl.textContent = `+${state.perClick} монет!`;
+
+        update();
+    });
+
+    // Улучшение силы клика
+    clickUpgrade.addEventListener("click", () => {
+        if (state.coins >= state.clickCost) {
+            state.coins -= state.clickCost;
+            state.perClick += 1;
+
+            state.clickCost = Math.floor(state.clickCost * 1.7);
+
+            messageEl.textContent = "💪 Сила клика увеличена!";
+
+            update();
+        }
+    });
+
+    // Покупка автокликера
+    autoUpgrade.addEventListener("click", () => {
+        if (state.coins >= state.autoCost) {
+            state.coins -= state.autoCost;
+            state.perSecond += 1;
+
+            state.autoCost = Math.floor(state.autoCost * 1.8);
+
+            messageEl.textContent = "🤖 Автодоход увеличен!";
+
+            update();
+        }
+    });
+
+    // Автоматическое начисление монет
+    setInterval(() => {
+        if (state.perSecond > 0) {
+            state.coins += state.perSecond;
+            update();
+        }
+    }, 1000);
+
+    // Сброс прогресса
+    document.getElementById("resetButton").addEventListener("click", () => {
+        if (confirm("Точно начать заново? Весь прогресс будет потерян.")) {
+            state = { ...defaultState };
+
+            messageEl.textContent = "🎮 Новая игра началась!";
+
+            update();
+        }
+    });
+
+    // Первоначальное отображение
+    update();
+    // Фоновая музыка NikitaCoin
+const music = document.getElementById("backgroundMusic");
+const musicButton = document.getElementById("musicButton");
+
+let musicEnabled = localStorage.getItem("NikitaCoinMusic") !== "off";
+
+function updateMusicButton() {
+    musicButton.textContent = musicEnabled
+        ? "🔊 Выключить музыку"
+        : "🔇 Включить музыку";
+}
+
+async function playMusic() {
+    if (!musicEnabled) return;
+
+    try {
+        await music.play();
+    } catch (error) {
+        console.log("Нажми на кнопку, чтобы запустить музыку.");
+    }
+
+    updateMusicButton();
+}
+
+musicButton.addEventListener("click", async () => {
+    musicEnabled = !musicEnabled;
+
+    localStorage.setItem(
+        "NikitaCoinMusic",
+        musicEnabled ? "on" : "off"
+    );
+
+    if (musicEnabled) {
+        await playMusic();
+    } else {
+        music.pause();
+    }
+
+    updateMusicButton();
+});
+
+// Браузер может разрешить звук только после первого действия игрока
+document.addEventListener("click", () => {
+    if (musicEnabled && music.paused) {
+        playMusic();
+    }
+});
+
+updateMusicButton();
+</script>
+
+</body>
+</html>
