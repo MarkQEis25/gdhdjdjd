@@ -236,7 +236,7 @@ function initialState(){
   totalClicks:0,totalEarned:0,critClicks:0,
   bossWins:0,prestige:0,playTime:0,
   pets:[],skin:"normal",ownedSkins:["normal"],
-  boughtCodes:[],unlocked:[],lastDaily:"",
+  boughtCodes:[],unlocked:[],achievementQueue:[],lastDaily:"",
   lastWheel:"",upgradeLevels:{},
   bossHp:100
  };
@@ -254,6 +254,7 @@ function load(){
   if(!Array.isArray(s.ownedSkins))s.ownedSkins=["normal"];
   if(!Array.isArray(s.boughtCodes))s.boughtCodes=[];
   if(!Array.isArray(s.unlocked))s.unlocked=[];
+  if(!Array.isArray(s.achievementQueue))s.achievementQueue=[];
   if(!s.upgradeLevels || typeof s.upgradeLevels!=="object")s.upgradeLevels={};
   if(!skinData.some(x=>x.id===s.skin))s.skin="normal";
   return s;
@@ -406,12 +407,45 @@ function renderAchievements(){
   let done=a.check(s);
   if(done&&!s.unlocked.includes(a.id)){
    s.unlocked.push(a.id);
+   if(!s.achievementQueue.includes(a.id))s.achievementQueue.push(a.id);
    earn(100);
   }
   let p=document.createElement("p");
   p.textContent=(done?"🏆 ":"🔒 ")+a.name+(done?" — получено!":" — не получено");
   $("achievements").appendChild(p);
  });
+}
+
+// Отправка новых достижений в Telegram. Очередь сохраняется в игре,
+// поэтому временный офлайн или сон бесплатного сервера не потеряет уведомление.
+let achievementSyncRunning=false;
+async function syncAchievementNotifications(){
+ if(achievementSyncRunning || !s.achievementQueue.length)return;
+ if(!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initData)return;
+ if(!TELEGRAM_API_URL || TELEGRAM_API_URL.includes("YOUR-RENDER-SERVICE"))return;
+
+ achievementSyncRunning=true;
+ try{
+  const response=await fetch(TELEGRAM_API_URL+"/api/achievements",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    initData:window.Telegram.WebApp.initData,
+    achievementIds:[...s.achievementQueue]
+   })
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(result.error||"Ошибка отправки достижений");
+  const delivered=new Set(result.deliveredIds||[]);
+  if(delivered.size){
+   s.achievementQueue=s.achievementQueue.filter(id=>!delivered.has(id));
+   save();
+  }
+ }catch(error){
+  console.warn("Не удалось отправить достижения в Telegram:",error);
+ }finally{
+  achievementSyncRunning=false;
+ }
 }
 
 function render(){
@@ -443,6 +477,7 @@ function render(){
  renderSkins();
  renderAchievements();
  save();
+ syncAchievementNotifications();
 }
 
 // Автоматический заработок
@@ -635,7 +670,7 @@ $("resetButton").onclick=()=>{
 
 
 // Telegram Mini App: отправка текущего баланса по нажатию кнопки.
-const TELEGRAM_API_URL = "https://tgpyhtmlbridge.onrender.com/";
+const TELEGRAM_API_URL = "https://tgpyhtmlbridge.onrender.com";
 
 $("sendTelegramBalance").onclick = async () => {
  const info = $("telegramInfo");
