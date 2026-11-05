@@ -1,396 +1,633 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>👀BogdanCoin</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            color: white;
-            background: linear-gradient(135deg, #141e30, #243b55);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .game {
-            width: 100%;
-            max-width: 400px;
-            padding: 30px 20px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid #ffffff20;
-            border-radius: 25px;
-            box-shadow: 0 10px 40px #0005;
-        }
-
-        h1 {
-            margin-top: 0;
-            color: #ffd700;
-            font-size: 32px;
-        }
-
-        .coins {
-            font-size: 32px;
-            font-weight: bold;
-            margin: 20px 0;
-            overflow-wrap: anywhere;
-        }
-
-        .coin {
-            width: 180px;
-            height: 180px;
-            padding: 0;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 5px solid #ffb700;
-            background: #222;
-            cursor: pointer;
-            box-shadow: 0 8px 0 #b96b00;
-            transition: transform 0.08s, box-shadow 0.08s;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .coin img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .coin:active {
-            transform: scale(0.93);
-            box-shadow: 0 3px 0 #b96b00;
-        }
-
-        .stats {
-            margin: 25px 0;
-            line-height: 1.9;
-            color: #ddd;
-            font-size: 16px;
-        }
-
-        .shop {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #ffffff30;
-        }
-
-        .shop h2 {
-            color: #ffd700;
-        }
-
-        .upgrade {
-            width: 100%;
-            padding: 14px 10px;
-            margin: 7px 0;
-            border: none;
-            border-radius: 12px;
-            background: #00c896;
-            color: #062e25;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .upgrade:hover:not(:disabled) {
-            background: #00e6ad;
-        }
-
-        .upgrade:disabled {
-            background: #65716e;
-            color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .message {
-            min-height: 24px;
-            margin-top: 12px;
-            color: #ffe259;
-        }
-
-        .reset {
-            margin-top: 20px;
-            padding: 9px 15px;
-            background: transparent;
-            color: #ff9999;
-            border: 1px solid #ff9999;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .reset:hover {
-            background: #ff999920;
-        }
-
-        .hint {
-            margin-top: 18px;
-            color: #aaa;
-            font-size: 12px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>👀 putCoin 2.0</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:15px;font-family:Arial,sans-serif;
+ color:white;text-align:center;
+ background:linear-gradient(135deg,#10152c,#263c61);
+}
+.game{max-width:650px;margin:auto}
+h1{color:#ffd84d;font-size:32px}
+.panel{
+ background:#ffffff12;border:1px solid #ffffff25;
+ border-radius:17px;padding:16px;margin:14px 0;
+}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat{background:#ffffff15;padding:12px;border-radius:12px}
+.coin{
+ width:175px;height:175px;border-radius:50%;
+ border:6px solid #ffba00;background:#222;
+ padding:0;overflow:hidden;cursor:pointer;
+ box-shadow:0 8px 0 #9a5700;
+ transition:.08s;
+}
+.coin:active{transform:scale(.92)}
+.coin img{width:100%;height:100%;object-fit:cover}
+button{
+ border:0;border-radius:11px;padding:12px;
+ margin:4px;background:#16bd83;color:white;
+ font-weight:bold;font-size:14px;cursor:pointer;
+}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:active:not(:disabled){transform:scale(.97)}
+.blue{background:#318bd1}
+.purple{background:#8055cc}
+.gold{background:#c28c17}
+.red{background:#b94c54}
+.gray{background:#536174}
+.full{width:100%}
+.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.item{background:#ffffff12;padding:10px;border-radius:12px}
+.item button{width:100%}
+.small{font-size:12px;color:#c4c9d7}
+.message{color:#ffdb62;min-height:22px;margin:8px}
+.bar{height:12px;background:#222;border-radius:20px;overflow:hidden}
+.bar div{height:100%;background:#27dc91;width:0%;transition:.2s}
+#clickText{color:#ffda4d;height:25px;font-weight:bold}
+#musicButton{background:#596e9b}
+hr{border:0;border-top:1px solid #ffffff22;margin:15px 0}
+input{
+ padding:12px;border-radius:9px;border:0;
+ width:65%;max-width:230px;text-transform:uppercase;
+}
+ul{text-align:left;line-height:1.9;padding-left:22px}
+@media(max-width:420px){
+ .coin{width:150px;height:150px}
+ h1{font-size:27px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+}
+</style>
 </head>
-
 <body>
-
 <div class="game">
 
-    <h1>👀BogdanCoin</h1>
-    <button id="musicButton" class="upgrade">
-    🔊 Выключить музыку
-</button>
+<h1>👀 putCoin 2.0</h1>
+<p>Добро пожаловать в мир putCoin!</p>
 
-<audio id="backgroundMusic" loop preload="auto">
-    <source src="2_5420576601060455365.ogg" type="audio/ogg">
-</audio>
+<div class="panel">
+ <div class="stats">
+  <div class="stat">🪙 Монеты<br><b id="coins">0</b></div>
+  <div class="stat">⭐ Уровень<br><b id="level">1</b></div>
+  <div class="stat">💪 За клик<br><b id="power">1</b></div>
+  <div class="stat">🤖 В секунду<br><b id="auto">0</b></div>
+  <div class="stat">👑 Престиж<br><b id="prestige">0</b></div>
+  <div class="stat">🐾 Питомцы<br><b id="pets">0</b></div>
+ </div>
+ <hr>
+ <p>Опыт: <span id="xp">0</span> / <span id="nextXp">100</span></p>
+ <div class="bar"><div id="xpBar"></div></div>
+</div>
 
-    <div class="coins">
-        🪙 <span id="coins">0</span>
-    </div>
+<div class="panel">
+ <h2>🪙 Главная монета</h2>
+ <button class="coin" id="coinButton">
+  <img src="coin.png" alt="putCoin">
+ </button>
+ <div id="clickText"></div>
+ <p>🔥 Комбо: <span id="combo">0</span></p>
+ <p>💥 Критический шанс: <span id="crit">5</span>%</p>
+ <p>Множитель престижа: x<span id="multiplier">1</span></p>
+</div>
 
-    <!-- Кнопка с твоей картинкой -->
-    <button class="coin" id="coinButton" aria-label="Получить монеты">
-        <img src="coin.png" alt="DolbaebCoin">
-    </button>
+<div class="panel">
+ <h2>🎵 Музыка</h2>
+ <button class="full" id="musicButton">🔊 Включить музыку</button>
+ <audio id="music" loop preload="auto">
+  <source src="music.ogg" type="audio/ogg">
+ </audio>
+</div>
 
-    <div class="stats">
-        💰 За клик: <span id="perClick">1</span><br>
-        🤖 Автодоход: <span id="perSecond">0</span> монет/сек
-    </div>
+<div class="panel">
+ <h2>🛒 Магазин улучшений</h2>
+ <div id="upgrades" class="shopgrid"></div>
+</div>
 
-    <div class="shop">
+<div class="panel">
+ <h2>🎨 Скины монеты</h2>
+ <div id="skins" class="shopgrid"></div>
+</div>
 
-        <h2>🛒 Магазин</h2>
+<div class="panel">
+ <h2>🐾 Магазин питомцев</h2>
+ <div id="petShop" class="shopgrid"></div>
+ <p class="small">Питомцы дают постоянный бонус к заработку.</p>
+</div>
 
-        <button class="upgrade" id="clickUpgrade">
-            💪 Сильный клик — 50 монет
-        </button>
+<div class="panel">
+ <h2>🎁 Ежедневный подарок</h2>
+ <p>Заходи каждый день и получай награду!</p>
+ <button id="daily" class="gold full">🎁 Получить подарок</button>
+ <p id="dailyInfo" class="small"></p>
+</div>
 
-        <button class="upgrade" id="autoUpgrade">
-            🤖 Автокликер — 100 монет
-        </button>
+<div class="panel">
+ <h2>🎰 Колесо удачи</h2>
+ <p>Испытай свою удачу!</p>
+ <button id="wheel" class="purple full">🎰 Крутить колесо</button>
+ <p id="wheelInfo" class="small"></p>
+</div>
 
-        <div class="message" id="message"></div>
+<div class="panel">
+ <h2>👾 Босс</h2>
+ <p id="bossName">Монстр монет</p>
+ <p>❤️ Здоровье: <span id="bossHp">100</span> / 100</p>
+ <div class="bar"><div id="bossBar"></div></div>
+ <button id="bossAttack" class="red full">⚔️ Атаковать босса</button>
+ <p class="small">За победу получишь монеты и опыт.</p>
+</div>
 
-    </div>
+<div class="panel">
+ <h2>🎮 Мини-игра</h2>
+ <p>У тебя 10 секунд. Нажимай на кнопку как можно быстрее!</p>
+ <p>Кликов: <b id="miniScore">0</b></p>
+ <button id="miniStart" class="blue full">▶ Начать мини-игру</button>
+ <button id="miniClick" class="gold full" disabled>👆 НАЖИМАЙ!</button>
+ <p id="miniInfo"></p>
+</div>
 
-    <button class="reset" id="resetButton">
-        🔄 Начать заново
-    </button>
+<div class="panel">
+ <h2>🔐 Секретные коды</h2>
+ <input id="promoInput" placeholder="ВВЕДИ КОД">
+ <button id="promoButton" class="purple">Активировать</button>
+ <p id="promoInfo" class="small"></p>
+</div>
 
-    <div class="hint">
-        NikitaCoin © 2026
-    </div>
+<div class="panel">
+ <h2>👑 Престиж</h2>
+ <p>Начни заново и получи постоянный множитель монет!</p>
+ <p>Текущий престиж: <b id="prestigeInfo">0</b></p>
+ <button id="prestigeButton" class="gold full">🔄 Получить престиж</button>
+ <p class="small">Требуется 100 000 монет.</p>
+</div>
 
+<div class="panel">
+ <h2>🏆 Достижения</h2>
+ <div id="achievements"></div>
+</div>
+
+<div class="panel">
+ <h2>📊 Статистика</h2>
+ <p>Всего кликов: <b id="totalClicks">0</b></p>
+ <p>Всего заработано: <b id="totalEarned">0</b></p>
+ <p>Собрано критических кликов: <b id="critClicks">0</b></p>
+ <p>Побед над боссами: <b id="bossWins">0</b></p>
+ <p>Время игры: <b id="playTime">0</b></p>
+</div>
+
+<button id="saveButton" class="blue full">💾 Сохранить игру</button>
+<button id="resetButton" class="red full">🗑️ Сбросить весь прогресс</button>
+
+<p class="small">putCoin 2.0 © 2026</p>
 </div>
 
 <script>
-    const defaultState = {
-        coins: 0,
-        perClick: 1,
-        perSecond: 0,
-        clickCost: 50,
-        autoCost: 100
-    };
+const $ = id => document.getElementById(id);
 
-    function loadGame() {
-        try {
-            const saved = localStorage.getItem("NikitaCoinSave");
+const upgradeData = [
+ {id:"power",name:"💪 Сильный клик",base:50,scale:1.7},
+ {id:"auto",name:"🤖 Автокликер",base:100,scale:1.8},
+ {id:"crit",name:"💥 Критический шанс",base:300,scale:2},
+ {id:"combo",name:"🔥 Сила комбо",base:500,scale:2}
+];
 
-            if (!saved) {
-                return { ...defaultState };
-            }
+const petData = [
+ {id:"cat",name:"🐱 Котик",cost:1000,bonus:0.05},
+ {id:"dog",name:"🐶 Собака",cost:5000,bonus:0.15},
+ {id:"dragon",name:"🐉 Дракон",cost:25000,bonus:0.5},
+ {id:"unicorn",name:"🦄 Единорог",cost:100000,bonus:1}
+];
 
-            const data = JSON.parse(saved);
+const skinData = [
+ {id:"normal",name:"🪙 Обычная",cost:0},
+ {id:"gold",name:"🥇 Золотая",cost:1000},
+ {id:"diamond",name:"💎 Алмазная",cost:5000},
+ {id:"rainbow",name:"🌈 Радужная",cost:15000},
+ {id:"galaxy",name:"🌌 Космическая",cost:50000}
+];
 
-            // Проверяем сохранённые данные
-            const result = { ...defaultState };
+const achievements = [
+ {id:"click10",name:"Первые 10 кликов",check:s=>s.totalClicks>=10},
+ {id:"click100",name:"Мастер кликов",check:s=>s.totalClicks>=100},
+ {id:"money1000",name:"Первая тысяча",check:s=>s.totalEarned>=1000},
+ {id:"money10000",name:"Богач",check:s=>s.totalEarned>=10000},
+ {id:"pet",name:"Любитель животных",check:s=>s.pets.length>=1},
+ {id:"boss",name:"Победитель босса",check:s=>s.bossWins>=1},
+ {id:"prestige",name:"Новая жизнь",check:s=>s.prestige>=1},
+ {id:"level10",name:"Ветеран",check:s=>level()>=10}
+];
 
-            for (const key of Object.keys(defaultState)) {
-                if (
-                    typeof data[key] === "number" &&
-                    Number.isFinite(data[key]) &&
-                    data[key] >= 0
-                ) {
-                    result[key] = data[key];
-                }
-            }
-
-            result.coins = Math.floor(result.coins);
-            result.perClick = Math.floor(result.perClick);
-            result.perSecond = Math.floor(result.perSecond);
-            result.clickCost = Math.floor(result.clickCost);
-            result.autoCost = Math.floor(result.autoCost);
-
-            result.perClick = Math.max(1, result.perClick);
-            result.clickCost = Math.max(1, result.clickCost);
-            result.autoCost = Math.max(1, result.autoCost);
-
-            return result;
-        } catch {
-            return { ...defaultState };
-        }
-    }
-
-    let state = loadGame();
-
-    const coinsEl = document.getElementById("coins");
-    const perClickEl = document.getElementById("perClick");
-    const perSecondEl = document.getElementById("perSecond");
-
-    const clickUpgrade = document.getElementById("clickUpgrade");
-    const autoUpgrade = document.getElementById("autoUpgrade");
-    const messageEl = document.getElementById("message");
-
-    function saveGame() {
-        try {
-            localStorage.setItem(
-                "NikitaCoinSave",
-                JSON.stringify(state)
-            );
-        } catch (error) {
-            console.warn("Не удалось сохранить игру", error);
-        }
-    }
-
-    function update() {
-        coinsEl.textContent = Math.floor(state.coins).toLocaleString("ru-RU");
-        perClickEl.textContent = state.perClick.toLocaleString("ru-RU");
-        perSecondEl.textContent = state.perSecond.toLocaleString("ru-RU");
-
-        clickUpgrade.textContent =
-            `💪 Сильный клик — ${state.clickCost.toLocaleString("ru-RU")} монет`;
-
-        autoUpgrade.textContent =
-            `🤖 Автокликер — ${state.autoCost.toLocaleString("ru-RU")} монет`;
-
-        clickUpgrade.disabled = state.coins < state.clickCost;
-        autoUpgrade.disabled = state.coins < state.autoCost;
-
-        saveGame();
-    }
-
-    // Заработок за нажатие на картинку
-    document.getElementById("coinButton").addEventListener("click", () => {
-        state.coins += state.perClick;
-
-        messageEl.textContent = `+${state.perClick} монет!`;
-
-        update();
-    });
-
-    // Улучшение силы клика
-    clickUpgrade.addEventListener("click", () => {
-        if (state.coins >= state.clickCost) {
-            state.coins -= state.clickCost;
-            state.perClick += 1;
-
-            state.clickCost = Math.floor(state.clickCost * 1.7);
-
-            messageEl.textContent = "💪 Сила клика увеличена!";
-
-            update();
-        }
-    });
-
-    // Покупка автокликера
-    autoUpgrade.addEventListener("click", () => {
-        if (state.coins >= state.autoCost) {
-            state.coins -= state.autoCost;
-            state.perSecond += 1;
-
-            state.autoCost = Math.floor(state.autoCost * 1.8);
-
-            messageEl.textContent = "🤖 Автодоход увеличен!";
-
-            update();
-        }
-    });
-
-    // Автоматическое начисление монет
-    setInterval(() => {
-        if (state.perSecond > 0) {
-            state.coins += state.perSecond;
-            update();
-        }
-    }, 1000);
-
-    // Сброс прогресса
-    document.getElementById("resetButton").addEventListener("click", () => {
-        if (confirm("Точно начать заново? Весь прогресс будет потерян.")) {
-            state = { ...defaultState };
-
-            messageEl.textContent = "🎮 Новая игра началась!";
-
-            update();
-        }
-    });
-
-    // Первоначальное отображение
-    update();
-    // Фоновая музыка NikitaCoin
-const music = document.getElementById("backgroundMusic");
-const musicButton = document.getElementById("musicButton");
-
-let musicEnabled = localStorage.getItem("NikitaCoinMusic") !== "off";
-
-function updateMusicButton() {
-    musicButton.textContent = musicEnabled
-        ? "🔊 Выключить музыку"
-        : "🔇 Включить музыку";
+function initialState(){
+ return {
+  coins:0,xp:0,power:1,auto:0,crit:5,
+  comboPower:1,combo:0,lastClick:0,
+  totalClicks:0,totalEarned:0,critClicks:0,
+  bossWins:0,prestige:0,playTime:0,
+  pets:[],skin:"normal",ownedSkins:["normal"],
+  boughtCodes:[],unlocked:[],lastDaily:"",
+  lastWheel:"",upgradeLevels:{},
+  bossHp:100
+ };
 }
 
-async function playMusic() {
-    if (!musicEnabled) return;
-
-    try {
-        await music.play();
-    } catch (error) {
-        console.log("Нажми на кнопку, чтобы запустить музыку.");
-    }
-
-    updateMusicButton();
+function load(){
+ try{
+  const saved=JSON.parse(localStorage.getItem("putCoin2Save"));
+  if(!saved)return initialState();
+  const s={...initialState(),...saved};
+  for(const k of ["coins","xp","power","auto","crit","comboPower","combo","totalClicks","totalEarned","critClicks","bossWins","prestige","playTime","bossHp"]){
+   if(!Number.isFinite(s[k]) || s[k]<0)s[k]=initialState()[k];
+  }
+  if(!Array.isArray(s.pets))s.pets=[];
+  if(!Array.isArray(s.ownedSkins))s.ownedSkins=["normal"];
+  if(!Array.isArray(s.boughtCodes))s.boughtCodes=[];
+  if(!Array.isArray(s.unlocked))s.unlocked=[];
+  if(!s.upgradeLevels || typeof s.upgradeLevels!=="object")s.upgradeLevels={};
+  if(!skinData.some(x=>x.id===s.skin))s.skin="normal";
+  return s;
+ }catch{return initialState();}
 }
 
-musicButton.addEventListener("click", async () => {
-    musicEnabled = !musicEnabled;
+let s=load();
+let miniRunning=false;
+let miniScore=0;
+let miniEnd=0;
+let miniTimer=null;
+let lastTick=Date.now();
 
-    localStorage.setItem(
-        "NikitaCoinMusic",
-        musicEnabled ? "on" : "off"
-    );
+function save(){
+ try{localStorage.setItem("putCoin2Save",JSON.stringify(s));}
+ catch(e){console.warn("Save failed",e);}
+}
 
-    if (musicEnabled) {
-        await playMusic();
-    } else {
-        music.pause();
-    }
+function level(){return Math.floor(s.xp/100)+1;}
+function nextXp(){return level()*100;}
+function prestigeMultiplier(){return 1+s.prestige*0.5;}
+function petBonus(){
+ return petData.reduce((a,p)=>a+(s.pets.includes(p.id)?p.bonus:0),0);
+}
+function incomeMultiplier(){
+ return prestigeMultiplier()*(1+petBonus());
+}
+function upgradeCost(u){
+ const n=s.upgradeLevels[u.id]||0;
+ return Math.floor(u.base*Math.pow(u.scale,n));
+}
+function money(n){return Math.floor(n).toLocaleString("ru-RU");}
 
-    updateMusicButton();
+function earn(n){
+ n=Math.floor(n);
+ if(n<=0)return;
+ s.coins+=n;
+ s.totalEarned+=n;
+}
+
+function addXP(n){
+ const old=level();
+ s.xp+=n;
+ if(level()>old)notify("⭐ Новый уровень: "+level()+"!");
+}
+
+function notify(t){
+ $("clickText").textContent=t;
+}
+
+function clickCoin(){
+ const now=Date.now();
+ s.combo=now-s.lastClick<1800?s.combo+1:1;
+ s.lastClick=now;
+ s.totalClicks++;
+
+ let amount=s.power*incomeMultiplier();
+ let critical=Math.random()*100<s.crit;
+ if(critical){
+  amount*=5;
+  s.critClicks++;
+ }
+ if(s.combo>=5)amount*=1+(Math.floor(s.combo/5)*0.1*s.comboPower);
+
+ amount=Math.floor(amount);
+ earn(amount);
+ addXP(1);
+
+ notify((critical?"💥 КРИТИЧЕСКИЙ КЛИК! ":"+")+"+"+money(amount)+" 🪙");
+ render();
+}
+
+$("coinButton").addEventListener("click",clickCoin);
+
+function renderUpgrades(){
+ $("upgrades").innerHTML="";
+ upgradeData.forEach(u=>{
+  let cost=upgradeCost(u);
+  let b=document.createElement("div");
+  b.className="item";
+  b.innerHTML=`<b>${u.name}</b><p class="small">Уровень: ${s.upgradeLevels[u.id]||0}</p><p>${money(cost)} 🪙</p>`;
+  let btn=document.createElement("button");
+  btn.textContent="Купить";
+  btn.disabled=s.coins<cost;
+  btn.onclick=()=>{
+   if(s.coins<cost)return;
+   s.coins-=cost;
+   s.upgradeLevels[u.id]=(s.upgradeLevels[u.id]||0)+1;
+   if(u.id==="power")s.power++;
+   if(u.id==="auto")s.auto+=1;
+   if(u.id==="crit")s.crit=Math.min(75,s.crit+2);
+   if(u.id==="combo")s.comboPower++;
+   notify("Улучшение куплено!");
+   render();
+  };
+  b.appendChild(btn);
+  $("upgrades").appendChild(b);
+ });
+}
+
+function renderPets(){
+ $("petShop").innerHTML="";
+ petData.forEach(p=>{
+  let owned=s.pets.includes(p.id);
+  let div=document.createElement("div");
+  div.className="item";
+  div.innerHTML=`<b>${p.name}</b><p class="small">Бонус +${p.bonus*100}%</p><p>${owned?"Уже куплен":money(p.cost)+" 🪙"}</p>`;
+  let btn=document.createElement("button");
+  btn.textContent=owned?"Куплен":"Купить";
+  btn.disabled=owned||s.coins<p.cost;
+  btn.onclick=()=>{
+   if(owned||s.coins<p.cost)return;
+   s.coins-=p.cost;
+   s.pets.push(p.id);
+   notify("🐾 Новый питомец!");
+   render();
+  };
+  div.appendChild(btn);
+  $("petShop").appendChild(div);
+ });
+}
+
+function renderSkins(){
+ $("skins").innerHTML="";
+ skinData.forEach(k=>{
+  let owned=s.ownedSkins.includes(k.id);
+  let div=document.createElement("div");
+  div.className="item";
+  div.innerHTML=`<b>${k.name}</b><p>${k.cost?money(k.cost)+" 🪙":"Бесплатно"}</p>`;
+  let btn=document.createElement("button");
+  btn.textContent=s.skin===k.id?"Выбран":owned?"Выбрать":"Купить";
+  btn.disabled=s.skin===k.id;
+  btn.onclick=()=>{
+   if(!owned){
+    if(s.coins<k.cost)return;
+    s.coins-=k.cost;
+    s.ownedSkins.push(k.id);
+   }
+   s.skin=k.id;
+   render();
+  };
+  div.appendChild(btn);
+  $("skins").appendChild(div);
+ });
+}
+
+function renderAchievements(){
+ $("achievements").innerHTML="";
+ achievements.forEach(a=>{
+  let done=a.check(s);
+  if(done&&!s.unlocked.includes(a.id)){
+   s.unlocked.push(a.id);
+   earn(100);
+  }
+  let p=document.createElement("p");
+  p.textContent=(done?"🏆 ":"🔒 ")+a.name+(done?" — получено!":" — не получено");
+  $("achievements").appendChild(p);
+ });
+}
+
+function render(){
+ $("coins").textContent=money(s.coins);
+ $("level").textContent=level();
+ $("power").textContent=money(s.power);
+ $("auto").textContent=money(s.auto);
+ $("prestige").textContent=s.prestige;
+ $("pets").textContent=s.pets.length;
+ $("xp").textContent=s.xp%nextXp();
+ $("nextXp").textContent=nextXp();
+ $("xpBar").style.width=(s.xp%nextXp())/nextXp()*100+"%";
+ $("combo").textContent=s.combo;
+ $("crit").textContent=s.crit;
+ $("multiplier").textContent=incomeMultiplier().toFixed(2);
+ $("totalClicks").textContent=money(s.totalClicks);
+ $("totalEarned").textContent=money(s.totalEarned);
+ $("critClicks").textContent=money(s.critClicks);
+ $("bossWins").textContent=s.bossWins;
+ $("playTime").textContent=Math.floor(s.playTime/60)+" мин.";
+ $("prestigeInfo").textContent=s.prestige;
+ $("bossHp").textContent=s.bossHp;
+ $("bossBar").style.width=s.bossHp+"%";
+ $("bossAttack").disabled=s.bossHp<=0;
+ $("dailyInfo").textContent=s.lastDaily?"Последний подарок: "+s.lastDaily:"Подарок ещё не получен";
+ $("wheelInfo").textContent=s.lastWheel?"Колесо использовано: "+s.lastWheel:"Колесо готово!";
+ renderUpgrades();
+ renderPets();
+ renderSkins();
+ renderAchievements();
+ save();
+}
+
+// Автоматический заработок
+setInterval(()=>{
+ const now=Date.now();
+ const delta=Math.min(5,(now-lastTick)/1000);
+ lastTick=now;
+ s.playTime+=delta;
+ if(s.auto>0){
+  earn(s.auto*incomeMultiplier()*delta);
+ }
+ if(s.combo>0&&Date.now()-s.lastClick>1800)s.combo=0;
+ render();
+},1000);
+
+// Ежедневный подарок
+$("daily").onclick=()=>{
+ const today=new Date().toLocaleDateString("en-CA");
+ if(s.lastDaily===today){
+  notify("🎁 Ты уже получил подарок сегодня!");
+  return;
+ }
+ const reward=500+level()*100;
+ earn(reward);
+ addXP(10);
+ s.lastDaily=today;
+ notify("🎁 Получено "+money(reward)+" монет!");
+ render();
+};
+
+// Колесо удачи: раз в сутки
+$("wheel").onclick=()=>{
+ const today=new Date().toLocaleDateString("en-CA");
+ if(s.lastWheel===today){
+  notify("🎰 Приходи завтра!");
+  return;
+ }
+ s.lastWheel=today;
+ const prizes=[100,250,500,1000,2500,5000,10000];
+ const reward=prizes[Math.floor(Math.random()*prizes.length)];
+ earn(reward);
+ notify("🎰 Тебе выпало "+money(reward)+" монет!");
+ render();
+};
+
+// Босс
+$("bossAttack").onclick=()=>{
+ if(s.bossHp<=0)return;
+ const damage=Math.max(1,Math.floor(s.power*incomeMultiplier()));
+ s.bossHp-=damage;
+ if(s.bossHp<=0){
+  s.bossHp=0;
+  const reward=1000+level()*200;
+  earn(reward);
+  addXP(50);
+  s.bossWins++;
+  notify("👾 Босс побеждён! +"+reward+" монет!");
+  setTimeout(()=>{
+   s.bossHp=100;
+   $("bossName").textContent="Новый монстр монет";
+   render();
+  },1500);
+ }else{
+  notify("⚔️ Урон босса: "+damage);
+ }
+ render();
+};
+
+// Мини-игра
+$("miniStart").onclick=()=>{
+ if(miniRunning)return;
+ miniRunning=true;
+ miniScore=0;
+ miniEnd=Date.now()+10000;
+ $("miniScore").textContent=0;
+ $("miniInfo").textContent="Время пошло!";
+ $("miniClick").disabled=false;
+ $("miniStart").disabled=true;
+ miniTimer=setInterval(()=>{
+  const left=Math.max(0,Math.ceil((miniEnd-Date.now())/1000));
+  $("miniInfo").textContent="Осталось: "+left+" сек.";
+  if(left<=0){
+   clearInterval(miniTimer);
+   miniRunning=false;
+   $("miniClick").disabled=true;
+   $("miniStart").disabled=false;
+   const reward=miniScore*20;
+   earn(reward);
+   addXP(miniScore);
+   $("miniInfo").textContent="🏆 "+miniScore+" кликов! Награда: "+reward+" монет.";
+   render();
+  }
+ },100);
+};
+
+$("miniClick").onclick=()=>{
+ if(!miniRunning)return;
+ miniScore++;
+ $("miniScore").textContent=miniScore;
+};
+
+// Промокоды
+const promoCodes={
+ NIKITA:1000,
+ COIN2026:5000,
+ FARM:2500,
+ SECRET:10000,
+ WELCOME:500
+};
+
+$("promoButton").onclick=()=>{
+ const code=$("promoInput").value.trim().toUpperCase();
+ if(!promoCodes[code]){
+  $("promoInfo").textContent="❌ Код не найден.";
+  return;
+ }
+ if(s.boughtCodes.includes(code)){
+  $("promoInfo").textContent="❌ Этот код уже использован.";
+  return;
+ }
+ s.boughtCodes.push(code);
+ earn(promoCodes[code]);
+ $("promoInfo").textContent="🎉 Получено "+promoCodes[code]+" монет!";
+ $("promoInput").value="";
+ render();
+};
+
+// Престиж
+$("prestigeButton").onclick=()=>{
+ if(s.coins<100000){
+  notify("Нужно минимум 100 000 монет!");
+  return;
+ }
+ if(!confirm("Получить престиж? Монеты и обычные улучшения сбросятся, но останется постоянный бонус."))return;
+ s.prestige++;
+ s.coins=0;
+ s.xp=0;
+ s.power=1;
+ s.auto=0;
+ s.crit=5;
+ s.comboPower=1;
+ s.combo=0;
+ s.upgradeLevels={};
+ s.pets=[];
+ s.ownedSkins=["normal"];
+ s.skin="normal";
+ s.bossHp=100;
+ notify("👑 Новый престиж! Множитель увеличен!");
+ render();
+};
+
+// Музыка
+const music=$("music");
+let musicOn=localStorage.getItem("putCoinMusic")!=="off";
+
+function musicButton(){
+ $("musicButton").textContent=musicOn?"🔊 Выключить музыку":"🔇 Включить музыку";
+}
+async function playMusic(){
+ if(!musicOn)return;
+ try{await music.play();}catch(e){}
+}
+$("musicButton").onclick=async()=>{
+ musicOn=!musicOn;
+ localStorage.setItem("putCoinMusic",musicOn?"on":"off");
+ if(musicOn)await playMusic();
+ else music.pause();
+ musicButton();
+};
+document.addEventListener("click",()=>{
+ if(musicOn&&music.paused)playMusic();
 });
+musicButton();
 
-// Браузер может разрешить звук только после первого действия игрока
-document.addEventListener("click", () => {
-    if (musicEnabled && music.paused) {
-        playMusic();
-    }
-});
+// Сохранение
+$("saveButton").onclick=()=>{
+ save();
+ notify("💾 Игра сохранена!");
+};
 
-updateMusicButton();
+// Полный сброс
+$("resetButton").onclick=()=>{
+ if(confirm("ВНИМАНИЕ! Удалить абсолютно весь прогресс?")){
+  localStorage.removeItem("putCoin2Save");
+  s=initialState();
+  render();
+  notify("Новая игра!");
+ }
+};
+
+render();
 </script>
-
 </body>
 </html>
+```
